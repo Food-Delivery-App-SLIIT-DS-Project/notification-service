@@ -1,0 +1,34 @@
+syntax="proto3";
+package notification;
+
+service NotificationService {
+    rpc SendNotification(SendNotificationRequest) returns (SendNotificationResponse);
+    rpc GetNotifications(GetNotificationsRequest) returns (GetNotificationsResponse);
+    rpc DeleteNotification(DeleteNotificationRequest) returns (DeleteNotificationResponse);
+}
+message SendNotificationRequest {
+    string userId = 1;
+    string message = 2;
+}
+message SendNotificationResponse {
+    string notificationId = 1;
+    string status = 2;
+}
+message GetNotificationsRequest {
+    string userId = 1;
+}
+message GetNotificationsResponse {
+    repeated Notification notifications = 1;
+}
+message DeleteNotificationRequest {
+    string notificationId = 1;
+}
+message DeleteNotificationResponse {
+    string status = 1;
+}
+message Notification {
+    string id = 1;
+    string userId = 2;
+    string message = 3;
+    string status = 4; // e.g., "sent", "read"
+}
