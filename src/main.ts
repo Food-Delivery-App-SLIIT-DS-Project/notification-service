@@ -1,17 +1,19 @@
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
     {
-      transport: Transport.GRPC,
+      transport: Transport.KAFKA,
       options: {
-        protoPath: join(__dirname, '../notification.proto'),
-        package: 'notification',
-        url: 'localhost:50054',
+        client: {
+          brokers: ['localhost:9092'],
+        },
+        consumer: {
+          groupId: 'notification-consumer',
+        },
       },
     },
   );
