@@ -24,10 +24,11 @@ export class NotificationService {
     );
   }
 
-  async notifyDeliveryPerson(person: any, orderId: string, pickup: string) {
-    const message = `New Order ${orderId} assigned. Pickup at: ${pickup}.`;
+  notifyDeliveryPerson(message: string) {
+    // const message = `New Order ${orderId} assigned. Pickup at: ${pickup}.`;
 
+    console.log(message);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    await this.smsService.send(person.phoneNumber, message);
+    // await this.smsService.send(person.phoneNumber, message);
   }
 }
