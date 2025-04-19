@@ -8,6 +8,7 @@
 import { Controller } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { NotificationService } from '../notification.service';
+import { DeliveryNotification } from 'types/delivery-notification';
 
 @Controller() // ✅ This is MANDATORY for Kafka event bindings
 export class NotificationEventHandler {
@@ -27,27 +28,37 @@ export class NotificationEventHandler {
   }
 
   @EventPattern('DELIVERY_ASSIGNED')
-  async handleOrderAssigned(@Payload() data: any) {
+  async handleOrderAssigned(@Payload() message: any) {
     try {
+      const data = message.data; // 👈 unwrap actual payload
       console.log('📦 Received DELIVERY_ASSIGNED event:', data);
-  
-      const { userId, orderId, pickupLocation } = data;
-  
+
+      const { token, orderId, pickupLocation, customerName, address, total } =
+        data;
+
       if (!pickupLocation || !pickupLocation.lat || !pickupLocation.lng) {
         console.warn('⚠️ Missing pickup location in DELIVERY_ASSIGNED:', data);
-        return; // Important: avoids crash and lets Kafka mark as "handled"
+        return;
       }
-  
-      const message = `🚚 New delivery assigned for Order ${orderId}. Pickup at ${pickupLocation.lat},${pickupLocation.lng}`;
-      
-      await this.notificationService.notifyDeliveryPerson(message);
-  
+
+      const distance = Math.sqrt(
+        Math.pow(pickupLocation.lat - 0, 2) +
+          Math.pow(pickupLocation.lng - 0, 2),
+      );
+
+      const messageToSend: DeliveryNotification = {
+        token,
+        orderId,
+        customerName,
+        address,
+        total,
+        distance,
+      };
+
+      await this.notificationService.notifyDeliveryPerson(messageToSend);
       console.log('✅ Notification sent to delivery personnel');
     } catch (error) {
       console.error('🚨 Error handling DELIVERY_ASSIGNED event:', error);
-      // Optionally: rethrow if you want Kafka to retry (not recommended for permanent errors)
-      // throw error;
     }
   }
-  
 }

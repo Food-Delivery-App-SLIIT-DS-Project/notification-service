@@ -2,12 +2,15 @@
 import { Injectable } from '@nestjs/common';
 import { EmailService } from './email/email.service';
 import { SmsService } from './sms/sms.service';
+import { FirebaseService } from 'src/firebase/firebase.service';
+import { DeliveryNotification } from 'types/delivery-notification';
 
 @Injectable()
 export class NotificationService {
   constructor(
     private readonly emailService: EmailService,
     private readonly smsService: SmsService,
+    private readonly firebaseService: FirebaseService,
   ) {}
 
   async sendOrderConfirmation(user: any, orderId: string, estimate: string) {
@@ -24,11 +27,14 @@ export class NotificationService {
     );
   }
 
-  notifyDeliveryPerson(message: string) {
+  async notifyDeliveryPerson(message: DeliveryNotification) {
     // const message = `New Order ${orderId} assigned. Pickup at: ${pickup}.`;
 
     console.log(message);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     // await this.smsService.send(person.phoneNumber, message);
+
+    await this.firebaseService.sendOrderNotification(message);
+    return { success: true };
   }
 }
