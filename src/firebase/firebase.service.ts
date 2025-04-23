@@ -1,16 +1,9 @@
-import * as admin from 'firebase-admin';
 import { Injectable } from '@nestjs/common';
-import * as serviceAccount from './firebase-service-account.json';
+import service_admin from './firebase-service-account';
 import { DeliveryNotification } from 'types/delivery-notification';
 
 @Injectable()
 export class FirebaseService {
-  constructor() {
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-    });
-  }
-
   async sendOrderNotification(data: DeliveryNotification) {
     const message = {
       token: data.token,
@@ -29,7 +22,7 @@ export class FirebaseService {
     };
 
     try {
-      const response = await admin.messaging().send(message);
+      const response = await service_admin.messaging().send(message);
       console.log('Successfully sent message:', response);
     } catch (error) {
       console.error('Error sending message:', error);
