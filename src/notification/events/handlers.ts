@@ -19,7 +19,8 @@ export class NotificationEventHandler {
   @EventPattern('ORDER_PLACED')
   async handleOrderPlaced(@Payload() data: any) {
     console.log('🔥 Received ORDER_PLACED event:', data);
-    const { user, orderId, deliveryEstimate } = data;
+    const { user, orderId } = data;
+    const deliveryEstimate = '30 minutes';
     await this.notificationService.sendOrderConfirmation(
       user,
       orderId,
