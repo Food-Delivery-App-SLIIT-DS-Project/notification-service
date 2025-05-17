@@ -33,7 +33,7 @@ jobs:
           kind: Deployment
           metadata:
             name: notification-service
-            namespace: default
+            namespace: notification-service
           spec:
             replicas: 1
             selector:
