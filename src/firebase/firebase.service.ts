@@ -14,10 +14,12 @@ export class FirebaseService {
       data: {
         orderId: data.orderId.toString(),
         customerName: data.customerName,
-        address: data.address,
+        customerMobile: data.customerMobile,
         total: data.total.toString(),
         distance: data.distance.toString(),
         click_action: 'FLUTTER_NOTIFICATION_CLICK',
+        pickupLocation: JSON.stringify(data.pickupLocation),
+        dropoffLocation: JSON.stringify(data.dropoffLocation),
       },
     };
 
