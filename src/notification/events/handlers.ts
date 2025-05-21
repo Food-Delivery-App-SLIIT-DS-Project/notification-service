@@ -34,14 +34,14 @@ export class NotificationEventHandler {
       const data = message.data; // 👈 unwrap actual payload
       console.log('📦 Received DELIVERY_ASSIGNED event:', data);
 
-      const { token, orderId, pickupLocation, customerName, address, total } =
+      const { token, orderId, pickupLocation, customerName, customerMobile, total , dropoffLocation} =
         data;
 
       if (!pickupLocation || !pickupLocation.lat || !pickupLocation.lng) {
         console.warn('⚠️ Missing pickup location in DELIVERY_ASSIGNED:', data);
         return;
       }
-
+      
       const distance = Math.sqrt(
         Math.pow(pickupLocation.lat - 0, 2) +
           Math.pow(pickupLocation.lng - 0, 2),
@@ -51,9 +51,11 @@ export class NotificationEventHandler {
         token,
         orderId,
         customerName,
-        address,
+        customerMobile,
         total,
         distance,
+        pickupLocation,
+        dropoffLocation
       };
 
       await this.notificationService.notifyDeliveryPerson(messageToSend);

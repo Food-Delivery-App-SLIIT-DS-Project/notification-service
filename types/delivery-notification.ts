@@ -1,8 +1,15 @@
 export type DeliveryNotification = {
   orderId: string;
   customerName: string;
-  address: string;
+  customerMobile: string;
+  pickupLocation: {
+    lat: number;
+    lng: number;
+  };
+  dropoffLocation: {
+    lat: number;
+    lng: number;
+  };
   total: number;
-  distance: number;
   token: string;
 };
